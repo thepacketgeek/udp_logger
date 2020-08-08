@@ -1,5 +1,5 @@
 use std::collections::VecDeque;
-use std::net::{ToSocketAddrs, UdpSocket};
+use std::net::{ToSocketAddrs, SocketAddr, UdpSocket};
 use std::sync::{Arc, Mutex};
 use std::thread;
 
@@ -35,6 +35,26 @@ impl UdpWriter {
 
     fn push(&self, message: String) {
         self.messages.lock().unwrap().push_back(message);
+    }
+}
+
+#[derive(Debug)]
+struct UdpUnbufferedWriter {
+    destination: SocketAddr,
+}
+
+impl UdpUnbufferedWriter {
+    pub fn new(destination: impl ToSocketAddrs) -> std::io::Result<Self> {
+        Ok(Self {
+            destination: destination.to_socket_addrs()?.into_iter().next().unwrap(),
+        })
+    }
+
+    fn push(&self, message: String) -> std::io::Result<()> {
+        UdpSocket::bind("0.0.0.0:0")
+            .unwrap()
+            .send_to(message.as_bytes(), self.destination)
+            .map(|_| ())
     }
 }
 
