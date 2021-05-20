@@ -17,9 +17,14 @@ fn main() -> std::io::Result<()> {
 }
 ```
 
-Can be viewed as desired by running `netcat` (or similar) on the receiving host:
+Run the example with:
 ```
-% ncat -lku localhost 1999
+$ cargo run --example basic
+```
+
+And log output can be viewed as desired by running `netcat` (or similar) on the receiving host:
+```
+% ncat -lu localhost 1999
 INFO [2020-06-15T03:15:39.740912039+00:00] testing 1 things
 INFO [2020-06-15T03:15:40.741074924+00:00] testing 1 things
 INFO [2020-06-15T03:15:41.741258993+00:00] testing 1 things
